@@ -1,30 +1,33 @@
 var guess = 0;
 var hits = 0;
 var isSunk = false;
-var countOfShips = 3;
+var countOfShips = 4;
 var value1;
 var value2;
 var mapSize = 7;
 var map = [];
-//map = new Array(mapSize);
-//for (i = 0; i < mapSize; i++) {
-//    map[i] = new Array(mapSize);
-//    for (j = 0; j < mapSize; j++) {
-//        map[i][j] = "false";
-//    }
-//}
+var mainPointsOfShips = [];
+var finishOfChoosePoints = false;
 
-for (var x = 0; x < mapSize; x++) {
+
+
+for (var x = 0; x < mapSize; x++) { //map = new Array(mapSize);
+    //for (i = 0; i < mapSize; i++) {
+    //    map[i] = new Array(mapSize);
+    //    for (j = 0; j < mapSize; j++) {
+    //        map[i][j] = "false";
+    //    }
+    //}
     map[x] = [];
     for (var y = 0; y < mapSize; y++) {
         map[x][y] = "false";
     }
 }
 
-
 function resizeShip(toChange1, toChange2, invert) {
     var secondPart;
     var thirdPart;
+    var fourthPart;
     if (invert != true) {
         if (toChange2 != 0 && toChange2 != (mapSize - 1)) {
             secondPart = toChange2 - 1;
@@ -38,9 +41,13 @@ function resizeShip(toChange1, toChange2, invert) {
             secondPart = toChange2 - 1;
             thirdPart = toChange2 - 2;
         }
+        if (checkShips(toChange1, secondPart) && checkShips(toChange1, thirdPart)) {
+            map[toChange1][secondPart] = "ship";
+            map[toChange1][thirdPart] = "ship";
+        } else {
+            resizeShip(toChange1, toChange2, true);
+        }
 
-        map[value1][secondPart] = "ship";
-        map[value1][thirdPart] = "ship";
 
     } else {
         if (toChange1 != 0 && toChange1 != (mapSize - 1)) {
@@ -48,6 +55,7 @@ function resizeShip(toChange1, toChange2, invert) {
             thirdPart = toChange1 + 1;
 
         } else if (toChange1 === 0) {
+
             secondPart = toChange1 + 1;
             thirdPart = toChange1 + 2;
 
@@ -55,18 +63,24 @@ function resizeShip(toChange1, toChange2, invert) {
             secondPart = toChange1 - 1;
             thirdPart = toChange1 - 2;
         }
-        map[secondPart][value2] = "ship";
-        map[thirdPart][value2] = "ship";
+        if (checkShips(secondPart, toChange2) && checkShips(thirdPart, toChange2)) {
+            map[secondPart][toChange2] = "ship";
+            map[thirdPart][toChange2] = "ship";
+        } else {
+            map[toChange1][toChange2] = "false";
+            initPoints(1);
+            console.log("haha");
+        }
 
     }
-
 }
-
+//
 function checkShips(field1, field2) {
     var f1min;
     var f1max;
     var f2min;
     var f2max;
+    var checkMainPoint = false;
     if (map[field1][field2] === "ship")
         return false;
 
@@ -90,44 +104,85 @@ function checkShips(field1, field2) {
         f2min = field2;
         f2max = field2 + 1;
     } else if (field2 == mapSize - 1) {
-        f2min = field2 - 1;
+        f2min = field2 - 1; //
         f2max = field2;
     }
 
-    for (i = f1min; i < f1max; i++) {
-        for (j = f2min; j < f2max; j++) {
+    for (i = f1min; i <= f1max; i++) {
+        columns: for (j = f2min; j <= f2max; j++) {
             if (map[i][j] == "ship") {
-                return false;
-            } else {
-                return true;
+                for (k = 0; k < 1; k++) {
+                    if (value1 == i && value2 == j) {
+                        continue columns;
+                    }
+
+                    return false;
+
+                }
             }
 
         }
     }
+    return true;
 }
-var counter = 0;
-while (counter < countOfShips) {
 
-    value1 = Math.floor(Math.random() * mapSize);
-    value2 = Math.floor(Math.random() * mapSize);
-    if (checkShips(value1, value2)) {
-        counter++;
-        map[value1][value2] = "ship";
-        var whichWay = Math.floor(Math.random() * 2);
-        console.log("WhichWay: " + whichWay)
-        if (whichWay == 0) {
-            resizeShip(value1, value2, false)
-        } else {
-            resizeShip(value1, value2, true)
+function myPosition() {
+    this.x = x;
+    this.y = y;
+
+}
+
+function initPoints(count) {
+    var counter = 0;
+    while (counter < count) {
+        value1 = Math.floor(Math.random() * mapSize);
+        value2 = Math.floor(Math.random() * mapSize);
+        console.log(value1);
+        console.log(value2);
+
+        if (checkShips(value1, value2)) {
+            map[value1][value2] = "ship";
+            resizeInit(value1, value2);
+            counter++;
+
+
+
         }
     }
+}
+
+
+//            mainPointsOfShips.push({
+//                row: value1,
+//                col: value2
+//            });
+
+
+//    finishOfChoosePoints = true;
+
+
+initPoints(countOfShips);
+
+
+function resizeInit(x, y) {
+    var whichWay = Math.floor(Math.random() * 2);
+    console.log("WhichWay: " + whichWay)
+    if (whichWay == 0) {
+        resizeShip(x, y, false);
+
+    } else {
+        resizeShip(x, y, true);
+
+    }
+
+
 }
 
 function showArray() {
     var counter = 0;
     for (i = 0; i < mapSize; i++) {
         for (j = 0; j < mapSize; j++) {
-            // document.writeln("i: " + i + ", j: " + j + " - " + map[i][j] + " <br>");
+            //            document.writeln("i: " + i + ", j: " + j + " - " + map[i][j] + " <br>");
             document.getElementById("f" + counter).innerHTML = map[i][j];
             if (document.getElementById("f" + counter).innerHTML == "ship") {
                 document.getElementById("f" + counter).className = "isShip";
