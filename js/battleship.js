@@ -15,11 +15,55 @@ var oneMastedShips = 4;
 var maxChanges = 50;
 var counterChanges = 0;
 var letters = ["", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+var shipsContainer = [];
+var counterShips = 0;
 for (var x = 0; x < mapSize; x++) {
     map[x] = [];
     for (var y = 0; y < mapSize; y++) {
-        map[x][y] = "false";
+        //        map[x][y] = "";
+        map[x][y] = new Field(x, y);
 
+
+    }
+}
+
+function Field(x, y) {
+    this.x = x;
+    this.y = y;
+    this.hit = false;
+}
+Field.prototype = {
+    constructor: Field,
+    getX: function () {
+        return this.x;
+    },
+    getY: function () {
+        return this.y;
+    }
+}
+
+
+function Ship(masts) {
+    this.masts = masts;
+    this.position = [];
+    this.hits = 0;
+    this.isSunk = false;
+}
+
+Ship.prototype = {
+    constructor: Ship,
+    setShip: function (fieldObject) {
+        this.position.push(fieldObject);
+    },
+    removeShip: function (fieldObject) {
+        this.position.pop(fieldObject);
+    },
+    checkIsHit: function (fieldObject) {
+        for (i = 0; i < this.position.length; i++)
+            if (this.position[i] === fieldObject) {
+                this.hits++;
+                console.log("trafiłeś");
+            }
     }
 }
 
@@ -46,17 +90,27 @@ function resizeShip(toChange1, toChange2, dimension, invert) {
         }
         switch (dimension) {
             case 4:
-                console.log(fourthPart);
+
                 if (checkShips(toChange1, secondPart) && checkShips(toChange1, thirdPart) && checkShips(toChange1, fourthPart)) {
+
                     map[toChange1][secondPart] = "ship";
                     map[toChange1][thirdPart] = "ship";
                     map[toChange1][fourthPart] = "ship";
+                    shipsContainer[counterShips - 1].setShip([toChange1, secondPart]);
+                    shipsContainer[counterShips - 1].setShip([toChange1, thirdPart]);
+                    shipsContainer[counterShips - 1].setShip([toChange1, fourthPart]);
+
                     break;
                 }
             case 3:
                 if (checkShips(toChange1, secondPart) && checkShips(toChange1, thirdPart)) {
                     map[toChange1][secondPart] = "ship";
                     map[toChange1][thirdPart] = "ship";
+                    shipsContainer[counterShips - 1].setShip([toChange1, secondPart]);
+                    console.log("Dodaje do" + (counterShips - 1) + " " + toChange1 + " i " + secondPart);
+                    shipsContainer[counterShips - 1].setShip([toChange1, thirdPart]);
+                    console.log("Dodaje " + (counterShips - 1) + " " + toChange1 + " i " + thirdPart);
+
                 } else {
                     resizeShip(toChange1, toChange2, 3, true);
                 }
@@ -64,6 +118,7 @@ function resizeShip(toChange1, toChange2, dimension, invert) {
             case 2:
                 if (checkShips(toChange1, secondPart)) {
                     map[toChange1][secondPart] = "ship";
+                    shipsContainer[counterShips - 1].setShip([toChange1, secondPart]);
                 } else {
                     resizeShip(toChange1, toChange2, 2, true);
                 }
@@ -103,22 +158,40 @@ function resizeShip(toChange1, toChange2, dimension, invert) {
                     map[secondPart][toChange2] = "ship";
                     map[thirdPart][toChange2] = "ship";
                     map[fourthPart][toChange2] = "ship";
+                    shipsContainer[counterShips - 1].setShip([secondPart, toChange2]);
+                    shipsContainer[counterShips - 1].setShip([thirdPart, toChange2]);
+                    shipsContainer[counterShips - 1].setShip([fourthPart, toChange2]);
+
                 }
                 break;
             case 3:
                 if (checkShips(secondPart, toChange2) && checkShips(thirdPart, toChange2)) {
                     map[secondPart][toChange2] = "ship";
                     map[thirdPart][toChange2] = "ship";
+                    shipsContainer[counterShips - 1].setShip([secondPart, toChange2]);
+                    console.log("Dodaje do" + (counterShips - 1) + " " + secondPart + " i " + toChange2);
+                    shipsContainer[counterShips - 1].setShip([thirdPart, toChange2]);
+                    console.log("Dodaje do" + (counterShips - 1) + " " + thirdPart + " i " + toChange2);
+
+
                 } else {
-                    map[toChange1][toChange2] = "false";
+                    map[toChange1][toChange2] = "";
+                    shipsContainer[counterShips - 1].removeShip([toChange1, toChange2]);
+                    console.log("Usuwam z " + (counterShips - 1) + toChange1 + " i " + toChange2);
+                    counterShips--;
                     initPoints(3, 1);
                 }
                 break;
             case 2:
                 if (checkShips(secondPart, toChange2)) {
                     map[secondPart][toChange2] = "ship";
+                    shipsContainer[counterShips - 1].setShip([secondPart, toChange2]);
+
                 } else {
-                    map[toChange1][toChange2] = "false";
+                    map[toChange1][toChange2] = "";
+                    shipsContainer[counterShips - 1].removeShip([toChange1, toChange2]);
+                    console.log("Usuwam z " + (counterShips - 1) + toChange1 + " i " + toChange2);
+                    counterShips--;
                     initPoints(2, 1);
                 }
 
@@ -128,7 +201,6 @@ function resizeShip(toChange1, toChange2, dimension, invert) {
                 }
 
         }
-
 
 
     }
@@ -197,7 +269,7 @@ function isFree() {
     var freePoints = []
     for (i = 0; i < mapSize - 1; i++) {
         for (j = 0; j < mapSize - 1; j++) {
-            if (map[i][j] == "false") {
+            if (map[i][j] == "") {
                 freePoints.push({
                     row: i,
                     col: j
@@ -215,6 +287,7 @@ function initPoints(version, count) {
             if (version > 1) {
                 value1 = Math.floor(Math.random() * mapSize);
                 value2 = Math.floor(Math.random() * mapSize);
+
             } else {
                 var tmp1;
                 var tmp2;
@@ -224,25 +297,41 @@ function initPoints(version, count) {
                 value2 = isFree()[tmp2].row;
             }
 
-            console.log(value1);
-            console.log(value2);
 
             if (checkShips(value1, value2)) {
                 map[value1][value2] = "ship";
+                console.log(value1);
+                console.log(value2);
+                if (shipsContainer[counterShips] === undefined) {
+                    shipsContainer[counterShips] = new Ship(version);
+                    console.log("Tworze counterShips" + [counterShips]);
+                }
+
+                shipsContainer[counterShips].setShip([value1, value2]);
+                console.log("Dodaje " + value1 + " i " + value2);
+
+                counterShips++;
                 if (version > 1)
                     resizeInit(value1, value2, version);
                 counter++;
-
-
-
             }
         }
     }
     counterChanges++;
 }
 
+///Find object when I put fild array
 
-
+//function findObject(object) {
+//
+//    for (i = 0; i < shipsContainer.length; i++) {
+//        for (j = 0; j < shipsContainer[i].position[j].length; j++) {
+//            if (shipsContainer[i].position[j] === object) {
+//                shipsContainer[i].hits++;
+//            }
+//        }
+//    }
+//}
 //            mainPointsOfShips.push({
 //                row: value1,
 //                 col: value2
@@ -254,8 +343,15 @@ function initPoints(version, count) {
 initPoints(4, fourMastedShips);
 initPoints(3, treeMastedShips);
 initPoints(2, twoMastedShips);
-initPoints(1, oneMastedShips);
-
+console.log(map[2][2].x)
+//initPoints(1, oneMastedShips);
+//console.log("Pierwszy element: " + shipsContainer[2].position[0]);
+//console.log("Drugi element: " + shipsContainer[2].position[1]);
+//console.log("Trzeci element: " + shipsContainer[2].position[2]);
+//console.log("Czwarty element: " + shipsContainer[0].position[3]);
+//for (i = 0; i < shipsContainer[9].position.length; i++)
+//    console.log("Element: " + i + " = " +
+//        shipsContainer[9].position[i]);
 
 function resizeInit(x, y, version) {
     var whichWay = Math.floor(Math.random() * 2);
@@ -320,3 +416,8 @@ function drawMatrix() {
 }
 drawMatrix();
 showArray();
+
+window.addEventListener("click", function (e) {
+    console.log(e);
+
+});
