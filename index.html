@@ -37,6 +37,8 @@
             width: 20px;
             height: 20px;
             border: 1px solid black;
+            text-align: center;
+            vertical-align: middle;
         }
         
         .field:hover {
@@ -45,7 +47,8 @@
         }
         
         .isShip {
-            background: red;
+            /*            background: red;*/
+            font-size: 0;
         }
         
         .isShip:hover {
@@ -53,8 +56,57 @@
             opacity: 0.8;
         }
         
+        .hitted {
+            background-color: #ddd;
+            font-size: 0;
+        }
+        
+        .hitted:hover {
+            cursor: not-allowed;
+        }
+        
+        .sunk {
+            font-size: 0;
+            background-color: aquamarine;
+        }
+        
+        .sunk:hover {
+            background-color: aquamarine;
+            cursor: not-allowed;
+        }
+        
+        .miss {
+            font-size: 20px;
+            margin: 0;
+            padding: 0;
+        }
+        
         h1 {
             text-align: center;
+        }
+        
+        #comunicats {
+            width: 400px;
+            position: absolute;
+            top: 70px;
+            left: 50px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        
+        #shotsCount {
+            width: 400px;
+            position: absolute;
+            top: 40px;
+            left: 50px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        
+        span.sunkText {
+            color: red;
         }
 
     </style>
@@ -66,6 +118,14 @@
         <table id="fields" class="center">
 
         </table>
+
+    </div>
+    <div id="shotsCount">
+        Ilość strzałów: 0
+    </div>
+    <div id="comunicats">
+        <h2>Komunikaty</h2>
+
 
     </div>
     <script src="js/battleship.js"></script>

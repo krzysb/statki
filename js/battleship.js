@@ -17,12 +17,21 @@ var counterChanges = 0;
 var letters = ["", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
 var shipsContainer = [];
 var counterShips = 0;
+var fields = [];
+var fieldsCounter = 0;
+var shotsCounter = 0;
+var countOfSunk = 0;
+var shotsCounts = document.getElementById("shotsCount");
+var comunicat = document.getElementById("comunicats");
 for (var x = 0; x < mapSize; x++) {
     map[x] = [];
     for (var y = 0; y < mapSize; y++) {
         //        map[x][y] = "";
         map[x][y] = new Field(x, y);
-
+        //        console.log("Tworze nowy Field " + x + " " + y);
+        //        field[fieldsCounter] = new Field(x, y);
+        //        fieldsCounter++;
+        map[x][y] = "";
 
     }
 }
@@ -32,16 +41,12 @@ function Field(x, y) {
     this.y = y;
     this.hit = false;
 }
-Field.prototype = {
-    constructor: Field,
-    getX: function () {
-        return this.x;
-    },
-    getY: function () {
-        return this.y;
-    }
-}
-
+Field.prototype.getX = function () {
+    return this.x;
+};
+Field.prototype.getY = function () {
+    return this.y;
+};
 
 function Ship(masts) {
     this.masts = masts;
@@ -58,15 +63,25 @@ Ship.prototype = {
     removeShip: function (fieldObject) {
         this.position.pop(fieldObject);
     },
-    checkIsHit: function (fieldObject) {
-        for (i = 0; i < this.position.length; i++)
-            if (this.position[i] === fieldObject) {
-                this.hits++;
-                console.log("trafiłeś");
-            }
+    isSunkAction: function () {
+        if (this.isSunk) {
+
+        }
+        //        for (i = 0; i < this.position.length; i++)
+        //            if (this.position[i] === fieldObject) {
+        //                this.hits++;
+        //                console.log("trafiłeś");
+        //            }
     }
 }
-
+//initPoints(1, oneMastedShips);
+//console.log("Pierwszy element: " + shipsContainer[2].position[0]);
+//console.log("Drugi element: " + shipsContainer[2].position[1]);
+//console.log("Trzeci element: " + shipsContainer[2].position[2]);
+//console.log("Czwarty element: " + shipsContainer[0].position[3]);
+//for (i = 0; i < shipsContainer[9].position.length; i++)
+//    console.log("Element: " + i + " = " +
+//        shipsContainer[9].position[i]);
 function resizeShip(toChange1, toChange2, dimension, invert) {
     var secondPart;
     var thirdPart;
@@ -90,16 +105,13 @@ function resizeShip(toChange1, toChange2, dimension, invert) {
         }
         switch (dimension) {
             case 4:
-
                 if (checkShips(toChange1, secondPart) && checkShips(toChange1, thirdPart) && checkShips(toChange1, fourthPart)) {
-
                     map[toChange1][secondPart] = "ship";
                     map[toChange1][thirdPart] = "ship";
                     map[toChange1][fourthPart] = "ship";
                     shipsContainer[counterShips - 1].setShip([toChange1, secondPart]);
                     shipsContainer[counterShips - 1].setShip([toChange1, thirdPart]);
                     shipsContainer[counterShips - 1].setShip([toChange1, fourthPart]);
-
                     break;
                 }
             case 3:
@@ -110,7 +122,6 @@ function resizeShip(toChange1, toChange2, dimension, invert) {
                     console.log("Dodaje do" + (counterShips - 1) + " " + toChange1 + " i " + secondPart);
                     shipsContainer[counterShips - 1].setShip([toChange1, thirdPart]);
                     console.log("Dodaje " + (counterShips - 1) + " " + toChange1 + " i " + thirdPart);
-
                 } else {
                     resizeShip(toChange1, toChange2, 3, true);
                 }
@@ -122,14 +133,17 @@ function resizeShip(toChange1, toChange2, dimension, invert) {
                 } else {
                     resizeShip(toChange1, toChange2, 2, true);
                 }
+                //console.log("Pierwszy element: " + shipsContainer[2].position[0]);
+                //console.log("Drugi element: " + shipsContainer[2].position[1]);
+                //console.log("Trzeci element: " + shipsContainer[2].position[2]);
+                //console.log("Czwarty element: " + shipsContainer[0].position[3]);
+                //for (i = 0; i < shipsContainer[9].position.length; i++)
+                //    console.log("Element: " + i + " = " +
+                //        shipsContainer[9].position[i]);
                 break;
             default:
                 break;
-
-
         }
-
-
 
     } else {
         if (toChange1 != 0 && toChange1 != (mapSize - 1)) {
@@ -173,7 +187,6 @@ function resizeShip(toChange1, toChange2, dimension, invert) {
                     shipsContainer[counterShips - 1].setShip([thirdPart, toChange2]);
                     console.log("Dodaje do" + (counterShips - 1) + " " + thirdPart + " i " + toChange2);
 
-
                 } else {
                     map[toChange1][toChange2] = "";
                     shipsContainer[counterShips - 1].removeShip([toChange1, toChange2]);
@@ -194,14 +207,12 @@ function resizeShip(toChange1, toChange2, dimension, invert) {
                     counterShips--;
                     initPoints(2, 1);
                 }
-
             default:
                 {
                     break;
                 }
 
         }
-
 
     }
 }
@@ -254,15 +265,11 @@ function checkShips(field1, field2) {
     return true;
 }
 
-
 function myPosition() {
     this.x = x;
     this.y = y;
     value1 = Math.floor(Math.random() * mapSize);
     value2 = Math.floor(Math.random() * mapSize);
-    console.log(value1);
-    console.log(value2);
-
 }
 
 function isFree() {
@@ -338,14 +345,20 @@ function initPoints(version, count) {
 //            });
 
 
-//    finishOfChoosePoints = true;
+//    finishOfChoosePoints = true;2
+
+
+
+
+drawMatrix();
+
 
 initPoints(4, fourMastedShips);
 initPoints(3, treeMastedShips);
 initPoints(2, twoMastedShips);
-console.log(map[2][2].x)
-//initPoints(1, oneMastedShips);
-//console.log("Pierwszy element: " + shipsContainer[2].position[0]);
+//console.log(test[1].getX());
+initPoints(1, oneMastedShips);
+console.log("Pierwszy element: " + shipsContainer[0].position[0]);
 //console.log("Drugi element: " + shipsContainer[2].position[1]);
 //console.log("Trzeci element: " + shipsContainer[2].position[2]);
 //console.log("Czwarty element: " + shipsContainer[0].position[3]);
@@ -362,8 +375,6 @@ function resizeInit(x, y, version) {
         resizeShip(x, y, version, true);
 
     }
-
-
 }
 
 function showArray() {
@@ -371,16 +382,25 @@ function showArray() {
     for (i = 0; i < mapSize; i++) {
         for (j = 0; j < mapSize; j++) {
             //            document.writeln("i: " + i + ", j: " + j + " - " + map[i][j] + " <br>");
-            document.getElementById("f" + counter).innerHTML = map[i][j];
-            if (document.getElementById("f" + counter).innerHTML == "ship") {
-                document.getElementById("f" + counter).className = "isShip";
+            document.getElementById(counter).innerHTML = map[i][j];
+            if (document.getElementById(counter).innerHTML == "ship") {
+                document.getElementById(counter).className = "field isShip";
             }
+            if (document.getElementById(counter).innerHTML == "hit") {
+                document.getElementById(counter).className = "field hitted";
+            }
+            if (document.getElementById(counter).innerHTML == "s") {
+                document.getElementById(counter).className = "field sunk";
+            }
+            if (document.getElementById(counter).innerHTML == "&bull;") {
+                document.getElementById(counter).className = "field miss";
+            }
+
             counter++;
         }
     }
 }
 
-//showArray();
 function drawMatrix() {
     var countFilds = 0;
     var container = document.getElementById('fields');
@@ -403,21 +423,142 @@ function drawMatrix() {
         newTrTitles.innerHTML = i + 1;
         container.appendChild(newTrTitles);
 
-
         for (j = 0; j < mapSize; j++) {
-
+            fields[countFilds] = new Field(x, y);
             var newTd = document.createElement('td');
-            newTd.id = "f" + countFilds;
+            newTd.id = countFilds;
             countFilds++;
             newTd.className = "field";
             container.appendChild(newTd);
         }
     }
 }
-drawMatrix();
+
+function whatTargetIsClicked() {
+    var field = document.getElementsByClassName("field");
+    var fieldShot;
+    var result;
+    for (i = 0; i < field.length; i++) {
+        field[i].addEventListener("click", checkPosition);
+    }
+
+    function checkPosition(e) {
+        fieldShot = (e.target.id);
+        if (fieldShot < 10) {
+            tmp1 = 0;
+            tmp2 = parseInt(fieldShot);
+            result = [tmp1, tmp2];
+
+        } else {
+            var tmp1 = (fieldShot.slice(0, 1));
+            var tmp2 = fieldShot.slice(1, 2);
+            result = [parseInt(tmp1), parseInt(tmp2)];
+        }
+        if (checkIsShip(result)) {
+            if (map[tmp1][tmp2] != "s") {
+                map[tmp1][tmp2] = "hit";
+            }
+
+            field[fieldShot].removeEventListener("click", checkPosition);
+        } else {
+            map[tmp1][tmp2] = "&bull;";
+            field[fieldShot].removeEventListener("click", checkPosition);
+        }
+        showArray();
+        shotsCounter++;
+        shotsCounts.innerHTML = "Ilość strzałów: " + shotsCounter;
+
+    }
+
+
+}
+
+
+function checkIsShip(arr) {
+    var result;
+    for (i = 0; i < shipsContainer.length; i++) {
+        for (j = 0; j < shipsContainer[i].position.length; j++) {
+            if (parseInt(shipsContainer[i].position[j]["0"]) == parseInt(arr["0"]) && parseInt(shipsContainer[i].position[j]["1"]) == parseInt(arr["1"])) {
+                switch (shipsContainer[i].masts) {
+                    case 4:
+                        comunicat.innerHTML += "Trafiłeś okręt czteromasztowy<br>";
+                        break;
+                    case 3:
+                        comunicat.innerHTML += "Trafiłeś okręt trzymasztowy<br>";
+                        break;
+                    case 2:
+                        comunicat.innerHTML += "Trafiłeś okręt dwumasztowy<br>";
+                        break;
+                    case 1:
+                        comunicat.innerHTML += "Trafiłeś okręt jednomasztowy<br>";
+                        break;
+                }
+                shipsContainer[i].hits++;
+                if (shipsContainer[i].hits == shipsContainer[i].position.length) {
+                    shipsContainer[i].isSunk = true;
+                    countOfSunk++;
+
+                    console.log("zatopiony");
+                    switch (shipsContainer[i].masts) {
+                        case 4:
+                            comunicat.innerHTML += "<span class='sunkText'>Zatopiłeś okręt czteromasztowy</span><br>";
+                            break;
+                        case 3:
+                            comunicat.innerHTML += "<span class='sunkText'>Zatopiłęś okręt trzymasztowy</span><br>";
+                            break;
+                        case 2:
+                            comunicat.innerHTML += "<span class='sunkText'>Zatopiłeś okręt dwumasztowy</span><br>";
+                            break;
+                        case 1:
+                            comunicat.innerHTML += "<span class='sunkText'>Zatopiłeś okręt jednomasztowy</span><br>";
+                            break;
+                    }
+
+                    for (k = 0; k < shipsContainer[i].position.length; k++) {
+                        var tmp1;
+                        var tmp2;
+                        tmp1 = (shipsContainer[i].position[k][0]);
+                        tmp2 = (shipsContainer[i].position[k][1]);
+                        map[tmp1][tmp2] = "s";
+                        console.log("tempy: " + tmp1, tmp2);
+                        console.log("temp: " + map[tmp1][tmp2]);
+
+
+                        //showArray();
+
+                    }
+                    //                    for (i = 0; i < shipsContainer.length; i++) {
+                    //
+                    //                        if (shipsContainer[i].isSunk == true) {
+                    //                            countOfSunk++;
+                    //                            console.log("Zatopiłeś:" + countOfSunk);
+                    //                        }
+                    //                        if (countOfSunk == 10) {
+                    //                            comunicat.innerHTML += "Koniec gry";
+                    //                        }
+                    //                    }
+                    console.log("Zatopionych: " + countOfSunk);
+                    if (countOfSunk == 10) {
+                        comunicat.innerHTML += "Koniec gry";
+                    }
+                }
+                //                console.log("porównuje " + shipsContainer[i].position[j] + " i " + arr)
+                console.log("trafiles");
+
+
+                return true;
+
+            } else {
+                console.log("porównuje " + shipsContainer[i].position[j] + " i " + arr)
+                console.log("pudło");
+
+            }
+        }
+    }
+
+
+}
+
 showArray();
 
-window.addEventListener("click", function (e) {
-    console.log(e);
-
-});
+whatTargetIsClicked();
